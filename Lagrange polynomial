@@ -1,0 +1,26 @@
+import numpy as np
+import matplotlib.pyplot as plt
+def f(x, y, t):
+    lag = 0
+    for j in range(len(y)):
+        n = 1
+        dn = 1
+        for i in range(len(x)): #Многочлен Лагранжа
+            if i == j:#Чтобы знаменатель не обращался в ноль
+                n = n * 1
+                dn = dn * 1
+            else:
+                n = n * (t - x[i])
+                dn = dn * (x[j] - x[i])
+        lag = lag + y[j] * n / dn
+    return lag
+xk = np.linspace(-1, 1, 11)
+yk = 1/(1+xk**2)
+xnew = np.linspace(-1, 1, 200)
+ynew = [f(xk, yk, i) for i in xnew]
+plt.title(u'Интерполяция по точкам')
+plt.xlabel(u'x')
+plt.ylabel(u'y')
+plt.plot(xk, yk, '.', xnew, ynew)
+plt.grid()
+plt.show()
