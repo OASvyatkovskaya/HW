@@ -1,0 +1,29 @@
+import numpy as np
+from random import randint
+k = 20
+m = np.zeros((k, k + 1))
+m1 = m
+n = len(m)
+v = np.zeros(n)
+for i in range(k - 1):
+    m[i + 1, i] = randint(1, 10)
+    m[i, i + 1] = randint(1, 10)
+for i in range(k):
+    m[i, i] = randint(1, 10)
+    m[i, k] = randint(1, 10)
+
+
+def f(m):
+    for i in range(n - 1):
+        m[i + 1, :] = m[i + 1, :] - m[i, :] / m[i, i] * m[i + 1, i]
+    for i in range(n - 1, 0, -1):
+        m[i - 1, :] = m[i - 1, :] - m[i, :] * m[i - 1, i] / m[i, i]
+    for i in range(n):
+        v[i] = (m[i, n] / m[i, i])
+    return v
+print(f(m))
+for i in range(k):
+    s=0
+    for j in range(k):
+        s+=(v[j]*m1[i,j])
+    print(s.round())
