@@ -1,0 +1,58 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+import pylab as pl
+import numpy.random
+from math import sqrt
+
+G = 6.67384 * 10 ** (-11.0)
+
+
+def f(m1, m2, r):
+    return m1 * m2 * G / (r ** 2)
+
+
+def err(m1, d1, m2, d2, r, dr):
+    return f(m1, m2, r), np.sqrt(
+        (G * m1 * d2 / (r ** 2)) ** 2 + (G * m2 * d1 / (r ** 2)) ** 2 + (G * m1 * m2 * (-2) * dr / (r ** 3) ** 2))
+
+
+def nMC(m1, d1, m2, d2, r, dr):
+    M1 = np.random.normal(m1, d1, 10 ** 6)
+    M2 = np.random.normal(m2, d2, 10 ** 6)
+    R = np.random.normal(r, dr, 10 ** 6)
+    F = f(M1, M2, R)
+    plt.hist(F, bins=100, density=1, facecolor='#4d4dff')
+    x, y = norm.fit(F)
+    min, max = plt.xlim()
+    plt.title('Histogram of normal distibution')
+    plt.xlabel('Gravitational force, N')
+    plt.ylabel('Quantity')
+    plt.grid(True)
+    plt.plot(np.linspace(min, max, 100), norm.pdf(np.linspace(min, max, 100), x, y), '#000080')
+    plt.show()
+
+def uMC(m1, d1, m2, d2, r, dr):
+    M1 = np.random.uniform(m1 - d1, m1 + d1, 10 ** 6)
+    M2 = np.random.uniform(m2 - d2, m2 + d2, 10 ** 6)
+    R = np.random.uniform(r - dr, r + dr, 10 ** 6)
+    F = f(M1, M2, R)
+    plt.hist(F, bins = 100, density = 1, facecolor = '#4d4dff')
+    x, y = norm.fit(F)
+    min, max = plt.xlim()
+    plt.title('Histogram of uniform distibution')
+    plt.xlabel('Gravitational force, N')
+    plt.ylabel('Quantity')
+    plt.grid(True)
+    plt.plot(np.linspace(min, max, 100), norm.pdf(np.linspace(min, max, 100), x, y), '#000080')
+    plt.show()
+nMC(40 * 10 ** 4, 0.05 / 3 * 10 ** 4, 30 * 10 ** 4, 0.1 / 3 * 10 ** 4, 3.2, 0.01 / 3)
+result, error = err(40 * 10 ** 4, 0.05 / 3 * 10 ** 4, 30 * 10 ** 4, 0.1 / 3 * 10 ** 4, 3.2, 0.01 / 3)
+print('For small values of errors F =', result, '+-', error, 'N')
+result, error = err(40 * 10 ** 4, 2 / 3 * 10 ** 4, 30 * 10 ** 4, 10 / 3 * 10 ** 4, 3.2, 1.0 / 3)
+print('For large values of errors F =', result, '+-', error, 'N')
+uMC(40 * 10 ** 4, 0.05 / 3 * 10 ** 4, 30 * 10 ** 4, 0.1 / 3 * 10 ** 4, 3.2, 0.01 / 3)
+nMC(40 * 10 ** 4, 2 / 3 * 10 ** 4, 30 * 10 ** 4, 10 / 3 * 10 ** 4, 3.2, 1.0 / 3)
+fig = plt.figure(figsize=(8, 1))
+t = fig.text(0, 0.5, 'As we may see, Monte-Carlo method perfectly fits small-errors distributions.\n You should not use it for errors about 20%.', dict(size=14))
+plt.show()
