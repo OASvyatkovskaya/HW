@@ -1,13 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-import pylab as pl
-import numpy.random
-from math import sqrt
-
 G = 6.67384 * 10 ** (-11.0)
-
-
 def f(m1, m2, r):
     return m1 * m2 * G / (r ** 2)
 
