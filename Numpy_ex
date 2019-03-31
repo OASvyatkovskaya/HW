@@ -1,0 +1,27 @@
+import numpy as np
+from random import randint
+import matplotlib.pyplot as plt
+a = np.array([1 if i == 4 else 0 for i in range(10)])
+print(a, 'Null vector of size 10 with the fifth value which is 1')
+a = np.array(list('Numpy_ex'))
+print(a[::-1], 'Reversed vector')
+a = np.arange(9, dtype=float).reshape((3, 3))
+print(a, 'A 3x3 matrix with values ranging from 0 to 8')
+a = np.zeros((8, 8))
+a[1::2, ::2] = 1
+a[::2, 1::2] = 1
+print(a, 'Checkerboard pattern')
+a = np.array([randint(-10, 10) for i in range(20)]).reshape(10, 2)
+b = np.zeros(20).reshape(10, 2)
+for i in range(10):
+    b[i, 0] = np.sqrt(a[i, 0] ** 2 + a[i, 1] ** 2)
+    b[i, 1] = np.arcsin(a[i, 1] / b[i, 0]) if b[i, 0] != 0 else 0.
+print(a, b, '10x2 matrix representing cartesian coordinates, converted to a polar coordinates')
+
+a = 1
+phi = np.linspace(-10, 10, 500)
+for p in phi :
+    for a in range(1, 4):
+        r = a/2 + np.cos(phi)
+        plt.plot(r *np.cos(phi), r * np.sin(phi) )
+plt.show()
