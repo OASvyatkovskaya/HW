@@ -1,0 +1,38 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+def f(x, u, w, k, p):
+    return -w * x - k * u + p * x ** 3
+
+
+print("Input constants and initial values in the next order: ", '\n', 'w^2,', 'k,', 'p,', 'x_0,', 'u_0,')
+w = float(input())
+k = float(input())
+p = float(input())
+x = float(input())
+u = float(input())
+xlst = [x]
+ulst = [u]
+h = np.linspace(0.0, 5 * 2 * np.pi / w, 10 ** (6))
+d = h[1] - h[0]
+for t_i in h[1:]:
+    ulst.append(ulst[-1] + d * f(xlst[-1], ulst[-1], w, k, p))
+    xlst.append(xlst[-1] + d * ulst[-2])
+plt.plot(h, xlst, '-')
+plt.show()
+
+
+def Runge_Kutta(x_i, u_i, w, k, p):
+    u_n = u_i + p * f(0.5 * p + x_i, u_i + 0.5 * p * f(x_i, u_i, w, k, p), w, k, p)
+    return u_n
+
+
+x1 = [x]
+u1 = [u]
+
+for t_i in h[1:]:
+    u1.append(Runge_Kutta(x1[-1], u1[-1], w, k, p))
+    x1.append(x1[-1] + p * u1[-2])
+plt.plot(h, x1, '-')
+plt.show()
