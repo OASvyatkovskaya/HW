@@ -1,0 +1,29 @@
+from openpyxl import load_workbook
+import numpy as np
+from sklearn.linear_model import LinearRegression, LogisticRegression
+
+wb = load_workbook('для Святковской.xlsx') #open
+allsheets = wb.get_sheet_names() #['реестр _ разработка']
+sheet = wb.get_sheet_by_name(allsheets[0]) #<Worksheet "реестр _ разработка">
+
+model = LinearRegression() #создаём модель линейной регрессии
+i = 3
+while sheet['A' + str(i)].value != None:   #проходим по всем строкам таблицы
+    j = 1
+    arr = []  #массив данных "Трансформированные факторы" и "Трансформированные качественные факторы"
+    while j < 13: #проходим по ячйкам от 'C' до 'N' i-той строки
+        F1j = sheet[chr(ord('B') + j) + str(i)].value
+        arr.append(F1j*(sheet["O" + str(i)].value*2 - 1))   #кладём значение ячейки в массив в зависимости от флага дефолта:
+        #если флаг 1, то кладем истинные значения, если 0 то ообратные по сложнию (отрицательные)
+        j += 1
+    y = np.array(arr) # массив входных данных
+    x = np.array(arr).reshape(-1, 1) # массив выходных данных
+    model.fit(x, y) # обучаем модель
+    i += 1
+
+print('intercept:', model.intercept_) #характеристики модели
+print('slope:', model.coef_)
+
+y_pred = model.predict(np.array([-21.88,12.10,-33.00,15.69,-59.37,18.84,25.91,-79.00,12.27,51.39,26.57,15.82]).reshape(-1, 1)) #проверяем модель на входных данных,
+#если выходные данные с тем же знаком, следовательно флаг дефолта 1, иначе 0
+print('predicted response:', y_pred, sep='\n')
